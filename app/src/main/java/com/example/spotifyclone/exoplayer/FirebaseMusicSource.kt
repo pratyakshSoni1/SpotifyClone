@@ -21,7 +21,7 @@ class FirebaseMusicSource @Inject constructor(
 
     var songs = emptyList<MediaMetadataCompat>()
 
-    suspend fun fetchMediaData() = withContext( Dispatchers.IO ){
+    suspend fun fetchMediaData():Unit = withContext( Dispatchers.IO ){
         state = State.STATE_INITIALIZING
         val allSongs = musicDatabase.getAllSongs()
         songs = allSongs.map{ song ->
@@ -41,10 +41,10 @@ class FirebaseMusicSource @Inject constructor(
         state = State.STATE_INITIALIZED
     }
 
-    fun asMediaSource(dataSource:DataSource.Factory): ConcatenatingMediaSource{
+    fun asMediaSource(dataSourceFactory:DataSource.Factory): ConcatenatingMediaSource{
         val concatenatingMediaSource = ConcatenatingMediaSource()
         songs.forEach { song ->
-            val mediaSource = ProgressiveMediaSource.Factory(dataSource)
+            val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(MediaItem.fromUri(song.getString(METADATA_KEY_MEDIA_URI).toUri()))
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
@@ -52,7 +52,7 @@ class FirebaseMusicSource @Inject constructor(
         return concatenatingMediaSource
     }
 
-    fun asMediaItem() = songs.map{ song ->
+    fun asMediaItem():MutableList<MediaBrowserCompat.MediaItem> = songs.map{ song ->
         val description = MediaDescriptionCompat.Builder()
             .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
             .setTitle(song.description.title)
@@ -63,7 +63,7 @@ class FirebaseMusicSource @Inject constructor(
 
         MediaBrowserCompat.MediaItem(description, FLAG_PLAYABLE)
 
-    }
+    }.toMutableList()
 
     private val onReadyListeners = mutableListOf<(Boolean) -> Unit>()
 

@@ -6,4 +6,4 @@ data class Song (
     val subtitle: String = "",
     val songUrl: String = "",
     val imageUrl: String = "",
-        )
+)
