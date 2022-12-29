@@ -41,11 +41,21 @@ class MusicServiceConnection(
         ComponentName( context, MusicService::class.java ),
         mediaBrowserConnectionCallback,
         null
-    )
+    ).apply {
+        connect()
+    }
 
 
     val transportControlls: MediaControllerCompat.TransportControls
         get() = mediaController.transportControls
+
+    fun subscribe(parentId:String, callback:MediaBrowserCompat.SubscriptionCallback){
+        mediaBrowser.subscribe(parentId, callback)
+    }
+
+    fun unSubscribe(parentId:String, callback:MediaBrowserCompat.SubscriptionCallback){
+        mediaBrowser.unsubscribe(parentId, callback)
+    }
 
     inner class MediaBrowserConnectionCallback(
         private val context:Context
@@ -54,7 +64,7 @@ class MusicServiceConnection(
         override fun onConnected() {
             super.onConnected()
             mediaController = MediaControllerCompat(context,  mediaBrowser.sessionToken).apply {
-
+                registerCallback(MediaControllerCallback())
             }
             _isConnected.postValue(Event(Resource.success(true)))
         }

@@ -1,9 +1,13 @@
 package com.example.spotifyclone.exoplayer
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import com.bumptech.glide.Glide
@@ -25,15 +29,28 @@ class MusicNotificationManager (
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val nManager =
+                context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+            nManager.createNotificationChannel(
+                NotificationChannel(
+                    context.resources.getString(R.string.notification_channel_name),
+                    "Music Notifications",
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+            )
+        }
+
         notificationManager = PlayerNotificationManager
             .Builder(
                 context,
                 NOTIFICATION_ID ,
                 context.resources.getString(R.string.notification_channel_name)
-//                R.string.notification_channel_description,
-//                NOTIFICATION_ID,
-//                notificationListener
-            ).build()
+            ).setMediaDescriptionAdapter(DescriptionAdapter(mediaController))
+            .setNotificationListener(notificationListener)
+            .setSmallIconResourceId(R.drawable.ic_music)
+            .build()
 
         notificationManager.apply {
             setSmallIcon(R.drawable.ic_music)
