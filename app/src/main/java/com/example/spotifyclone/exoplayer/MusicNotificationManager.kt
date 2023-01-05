@@ -70,6 +70,7 @@ class MusicNotificationManager (
 
     ):PlayerNotificationManager.MediaDescriptionAdapter{
         override fun getCurrentContentTitle(player: Player): CharSequence {
+            newSongCallbacks()
             return mediaController.metadata.description.title.toString()
         }
 

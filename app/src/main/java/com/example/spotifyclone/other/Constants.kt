@@ -10,4 +10,5 @@ object Constants {
     const val NOTIFICATION_CHANNEL_ID = "Music"
     const val NOTIFICATION_ID = 1
 
+    const val UPDATE_PLAYER_POSITION_INTERVAL = 100L
 }

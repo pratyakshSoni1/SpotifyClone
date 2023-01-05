@@ -8,6 +8,8 @@ class SwipeSongAdapter(
     val layoutId:Int
 ): BaseSongAdapter<SwipeItemBinding>(layoutId) {
 
+    override var differ: AsyncListDiffer<Song> = AsyncListDiffer(this, diffCallback)
+
     override fun onBindHolder(binding: SwipeItemBinding, position: Int) {
         val song = songs[position]
         val text = "${song.title} - ${song.subtitle}"
@@ -21,6 +23,5 @@ class SwipeSongAdapter(
         }
     }
 
-    override var differ: AsyncListDiffer<Song> = AsyncListDiffer(this, diffCallback)
 
 }

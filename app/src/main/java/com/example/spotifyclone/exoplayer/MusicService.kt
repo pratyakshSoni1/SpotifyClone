@@ -18,6 +18,7 @@ import com.example.spotifyclone.other.Constants.MEDIA_ROOT_ID
 import com.example.spotifyclone.other.Constants.NETWORK_ERROR
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
@@ -115,7 +116,7 @@ class MusicService: MediaBrowserServiceCompat() {
 
     private inner class MusicQueueNavigator: TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-            return firebaseMusicSource.songs[windowIndex].description
+            return firebaseMusicSource.songs[windowIndex].description as MediaDescriptionCompat
         }
     }
 
